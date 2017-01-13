@@ -1,3 +1,17 @@
+cdef extern from "pico/runtime/picornt.h":
+    int find_objects(float* rcsq, 
+                     int maxndetections,
+                     void* cascade, 
+                     float angle,
+                     void* pixels, 
+                     int nrows, 
+                     int ncols, 
+                     int ldim,
+			         float scalefactor, 
+                     float stridefactor, 
+                     float minsize, 
+                     float maxsize)
+
 cdef extern from "pico_wrapper.h":
     const long FACE_CASCADES_SIZE
     unsigned char* FACE_CASCADES
