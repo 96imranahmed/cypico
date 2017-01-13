@@ -1,6 +1,6 @@
 #pragma once
 #include <math.h>
-#include "cypico/pico/runtime/picort.h"
+#include "cypico/pico/runtime/picornt.h"
 
 #ifndef MIN
     #define MIN(a, b) ((a)<(b)?(a):(b))
@@ -25,9 +25,6 @@ int pico_detect_objects(const unsigned char* image,
                         const float stride_factor,
                         const float min_size, 
                         const float q_cutoff,
-                        float* qs, 
-                        float* rs, 
-                        float* cs, 
-                        float* ss,
+                        float* rcsq,
                         float* os);
 

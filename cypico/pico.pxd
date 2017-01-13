@@ -13,8 +13,5 @@ cdef extern from "pico_wrapper.h":
                             const float stride_factor,
                             const float min_size, 
                             const float q_cutoff,
-                            float* qs,
-                            float* rs,
-                            float* cs, 
-                            float* rs,
+                            float* rcsq,
                             float* os)

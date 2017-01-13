@@ -35,7 +35,7 @@
 
 # distutils: language = c++
 # distutils: include_dirs = ./
-# distutils: sources = cypico/pico/runtime/picort.cpp cypico/pico_wrapper.cpp
+# distutils: sources = cypico/pico/runtime/picornt.c cypico/pico_wrapper.cpp
 import numpy as np
 cimport numpy as np
 from cython cimport view
@@ -181,29 +181,33 @@ cpdef detect_objects(unsigned char[:, :] image, unsigned char[::1] cascades,
         int width = image.shape[1]
         int n_detections = 0
         int n_orientations = orientations_arr.shape[0]
-        float[:] confidences      = np.zeros(max_detections, dtype=np.float32)
+        float[:] output           = np.zeros(4*max_detections, dtype=np.float32)
         float[:] out_orientations = np.zeros(max_detections, dtype=np.float32)
-        float[:] y_coords         = np.zeros(max_detections, dtype=np.float32)
-        float[:] x_coords         = np.zeros(max_detections, dtype=np.float32)
-        float[:] diameters        = np.zeros(max_detections, dtype=np.float32)
 
-    n_detections = pico_detect_objects(&image[0, 0], height, width,
-                                       width, &cascades[0],
-                                       max_detections, n_orientations,
+    n_detections = pico_detect_objects(&image[0, 0], 
+                                       height, 
+                                       width,
+                                       width, 
+                                       &cascades[0],
+                                       max_detections, 
+                                       n_orientations,
                                        &orientations_arr[0],
-                                       scale_factor, stride_factor,
-                                       min_size, confidence_cutoff,
-                                       &confidences[0], &y_coords[0],
-                                       &x_coords[0], &diameters[0],
+                                       scale_factor, 
+                                       stride_factor,
+                                       min_size, 
+                                       confidence_cutoff,
+                                       &output[0],
                                        &out_orientations[0])
 
     results = []
     for i in range(n_detections):
-        results.append(PicoDetection(
-            confidences[i],
-            np.array([y_coords[i], x_coords[i]]),
-            diameters[i],
-            out_orientations[i])
+        results.append(
+            PicoDetection(
+                output[4*i],
+                np.array([output[4*i+1], output[4*i+2]]),
+                output[4*i+3],
+                out_orientations[i]
+            )
         )
 
     return results

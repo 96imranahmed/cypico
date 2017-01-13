@@ -18,11 +18,11 @@ setup(name='cypico',
       include_dirs=[np.get_include()],
       ext_modules=cythonize(cython_modules, quiet=True),
       package_data={'cypico': ['pico/runtime/cascades/*',
-                               'pico/runtime/picort.*',
+                               'pico/runtime/picornt.*',
                                'pico.pyx',
                                'pico.pxd',
                                'pico_wrapper.h',
-                               'pico_wrapper.c']},
+                               'pico_wrapper.cpp']},
       install_requires=requirements,
       packages=find_packages()
 )
