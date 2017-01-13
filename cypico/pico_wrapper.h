@@ -10,7 +10,7 @@ extern "C" {
 
 static const unsigned char CASCADES[] =
 {
-    #include "facefinder_new.ea"
+    #include "facefinder_new.hex"
 };
 static const long CASCADES_SIZE = (long) (sizeof(CASCADES) / sizeof(unsigned char));
 

@@ -16,6 +16,19 @@ Then,
 
 If using python3, stay consistent - otherwise Cython build errors will occur
 
+### Loading new models
+First use bin2hex (included) to convert model generated from standard pico
+implementation:
+`https://github.com/nenadmarkus/pico - current commit: 45564fc 16 Nov 2016`
+
+Alternatively, you can also use:
+`http://tomeko.net/online_tools/file_to_hex.php?lang=en`
+
+Place new cascade (save with extension .hex) in the `cypico` directory along 
+with the other cascade and change `pico_wrapper.h` to point to new cascade.
+
+Reinstall cypico as above!
+
 TODO (From old repo)
 ---------------------
 ### Loading Pico Models
