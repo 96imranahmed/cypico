@@ -8,12 +8,13 @@ extern "C" {
     #define MIN(a, b) ((a)<(b)?(a):(b))
 #endif
 
-static const unsigned char FACE_CASCADES[] =
+static const unsigned char CASCADES[] =
 {
-    #include "facefinder.ea"
+    #include "facefinder_new.ea"
 };
-static const long FACE_CASCADES_SIZE = (long) (sizeof(FACE_CASCADES) / sizeof(unsigned char));
+static const long CASCADES_SIZE = (long) (sizeof(CASCADES) / sizeof(unsigned char));
 
+int pico_cluster_objects(float* rcsq, int n_detections);
 
 int pico_detect_objects(const unsigned char* image, 
                         const int height,

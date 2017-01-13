@@ -1,6 +1,8 @@
 cdef extern from "pico_wrapper.h":
-    const long FACE_CASCADES_SIZE
-    unsigned char* FACE_CASCADES
+    const long CASCADES_SIZE
+    unsigned char* CASCADES
+    int pico_cluster_objects(float* rcsq,
+                             int n_detections)
     int pico_detect_objects(const unsigned char* image, 
                             const int height,
                             const int width, 

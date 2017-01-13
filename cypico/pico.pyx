@@ -39,16 +39,16 @@
 import numpy as np
 cimport numpy as np
 from cython cimport view
-from .pico cimport pico_detect_objects, FACE_CASCADES, FACE_CASCADES_SIZE
+from .pico cimport pico_cluster_objects, pico_detect_objects, CASCADES, CASCADES_SIZE
 from collections import namedtuple
 
 
 # Allocate a typed memory view wrapped for the face cascades
 # Required to pass the static Face Cascades memory around in Python
-cdef view.array FACE_CASCADES_VIEW = view.array(
-    shape=(FACE_CASCADES_SIZE,), itemsize=sizeof(unsigned char), format='B',
+cdef view.array CASCADES_VIEW = view.array(
+    shape=(CASCADES_SIZE,), itemsize=sizeof(unsigned char), format='B',
     mode='c', allocate_buffer=False)
-FACE_CASCADES_VIEW.data = <char *> FACE_CASCADES
+CASCADES_VIEW.data = <char *> CASCADES
 
 
 # Create a namedtuple to store a single detection
@@ -105,7 +105,7 @@ cpdef detect_frontal_faces(unsigned char[:, :] image, int max_detections=100,
         If ``scale_factor`` is less than or equal to 1.0
         If ``stride_factor`` is greater than or equal to 1.0
     """
-    return detect_objects(image, FACE_CASCADES_VIEW,
+    return detect_objects(image, CASCADES_VIEW,
                           max_detections=max_detections,
                           orientations=orientations, scale_factor=scale_factor,
                           stride_factor=stride_factor, min_size=min_size,

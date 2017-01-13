@@ -1,5 +1,11 @@
 #include "pico_wrapper.h"
 
+int pico_cluster_objects(float* rcsq, int n_detections)
+{
+    n_detections = cluster_detections(&rcsq[n_detections], n_detections);
+    return n_detections;
+}
+
 int pico_detect_objects(const unsigned char* image, 
                         const int height,
                         const int width, 
