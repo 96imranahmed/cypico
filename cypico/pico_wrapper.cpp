@@ -1,6 +1,5 @@
 #include "pico_wrapper.h"
 
-
 int pico_detect_objects(const unsigned char* image, 
                         const int height,
                         const int width, 
