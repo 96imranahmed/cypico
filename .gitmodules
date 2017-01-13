@@ -1,3 +1,0 @@
-[submodule "pico"]
-	path = cypico/pico
-	url = https://github.com/menpo/pico.git

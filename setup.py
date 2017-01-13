@@ -1,7 +1,6 @@
 from setuptools import setup, find_packages
 from Cython.Build import cythonize
 import numpy as np
-import versioneer
 
 
 cython_modules = ['cypico/pico.pyx']
@@ -9,8 +8,6 @@ cython_modules = ['cypico/pico.pyx']
 requirements = ['numpy>=1.10,<=2.0', 'Cython>=0.23,<=0.24']
 
 setup_options = dict(name='cypico',
-      version=versioneer.get_version(),
-      cmdclass=versioneer.get_cmdclass(),
       description='A Cython wrapper around the Pico face detection library. Extended for C-API by Imran Ahmed (96imranahmed@gmail.com)',
       author='Patrick Snape',
       author_email='p.snape@imperial.ac.uk',
