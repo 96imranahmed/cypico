@@ -8,7 +8,7 @@ cython_modules = ['cypico/pico.pyx']
 
 requirements = ['numpy>=1.10,<=2.0', 'Cython>=0.23,<=0.24']
 
-setup(name='cypico',
+setup_options = dict(name='cypico',
       version=versioneer.get_version(),
       cmdclass=versioneer.get_cmdclass(),
       description='A Cython wrapper around the Pico face detection library.',
@@ -27,3 +27,9 @@ setup(name='cypico',
       install_requires=requirements,
       packages=find_packages()
 )
+
+#Hack for OSX Python 3.5 (see 'numpy/arrayobject.h' file not found, cython, osx)
+for em in setup_options["ext_modules"]:
+    em.include_dirs = [np.get_include()]
+
+setup(**setup_options)

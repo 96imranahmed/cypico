@@ -10,7 +10,7 @@ extern "C" {
 
 static const unsigned char FACE_CASCADES[] =
 {
-    #include "cypico/facefinder.ea"
+    #include "facefinder.ea"
 };
 static const long FACE_CASCADES_SIZE = (long) (sizeof(FACE_CASCADES) / sizeof(unsigned char));
 
