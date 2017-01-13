@@ -1,0 +1,10 @@
+.idea/*
+dist/*
+*.iml
+*~
+*.pyc
+build/*
+cypico/*.so
+cypico/pico.cpp
+
+cypico.egg-info/*

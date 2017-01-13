@@ -1,0 +1,2 @@
+include versioneer.py
+include cypico/_version.py
