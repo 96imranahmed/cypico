@@ -1,6 +1,8 @@
 #pragma once
 #include <math.h>
-#include "cypico/pico/runtime/picornt.h"
+extern "C" {
+    #include "picornt.h"
+}
 
 #ifndef MIN
     #define MIN(a, b) ((a)<(b)?(a):(b))
@@ -8,7 +10,7 @@
 
 static const unsigned char FACE_CASCADES[] =
 {
-    #include "cypico/pico/runtime/cascades/facefinder.ea"
+    #include "cypico/facefinder.ea"
 };
 static const long FACE_CASCADES_SIZE = (long) (sizeof(FACE_CASCADES) / sizeof(unsigned char));
 

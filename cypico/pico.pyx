@@ -35,7 +35,7 @@
 
 # distutils: language = c++
 # distutils: include_dirs = ./
-# distutils: sources = cypico/pico/runtime/picornt.c cypico/pico_wrapper.cpp
+# distutils: sources = cypico/picornt.c cypico/pico_wrapper.cpp
 import numpy as np
 cimport numpy as np
 from cython cimport view
