@@ -2,7 +2,7 @@
 
 int pico_cluster_objects(float* rcsq, int n_detections)
 {
-    n_detections = cluster_detections(&rcsq[n_detections], n_detections);
+    n_detections = cluster_detections(&rcsq[4*n_detections], n_detections);
     return n_detections;
 }
 
@@ -27,7 +27,7 @@ int pico_detect_objects(const unsigned char* image,
     // Scan the image at n_orientations different orientations
     for(i = 0; i < n_orientations; i++) {
         
-        n_new_detections = find_objects(&rcsq[n_detections],           //results
+        n_new_detections = find_objects(&rcsq[4*n_detections],           //results
                                         max_detections - n_detections, //max-detections
                                         (void *)cascades,              //cascade
                                         orientations[i],               //angle (0 - 0.0, 1 - 2*pi)
