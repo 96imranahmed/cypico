@@ -211,3 +211,24 @@ cpdef detect_objects(unsigned char[:, :] image, unsigned char[::1] cascades,
         )
 
     return results
+
+cpdef remove_overlap(detections, int n_detections):
+    results_out = []
+    check_dict = {}
+    cdef float[:] arr = np.zeros(4*n_detections, dtype=np.float32)
+    for i in range(n_detections):
+        cur = tuple(detections[i][0], detections[i][1][0], detections[i][1][1], detections[i][2])
+        check_dict[cur] = detections[i][3]
+        arr[4*i:4*i+4] = cur
+    n_detections = pico_cluster_objects(&arr[0], n_detections)
+    for i in range(n_detections):
+        cur = tuple(arr[4*i:4*i+4])
+        results_out.append(
+            PicoDetection(
+                arr[4*i],
+                np.array([arr[4*i+1], arr[4*i+2]]),
+                arr[4*i+3],
+                check_dict[cur]
+            )
+        )
+    return results_out
