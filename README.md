@@ -6,11 +6,18 @@ Please see the `LICENSE.md` file for information on the licensing.
 
 Installation
 ------------
-Install using Python: ``python setup.py install``
+Install using Python:
 
+``python(3) setup.py build_ext --inplace``
 
-TODO
-----
+Then,
+
+``(sudo) python(3) setup.py install``
+
+If using python3, stay consistent - otherwise Cython build errors will occur
+
+TODO (From old repo)
+---------------------
 ### Loading Pico Models
 By default, Pico models are saved down as raw data, loaded into a ``char*``
 array, then cast into the members of the C-struct they actually represent.
