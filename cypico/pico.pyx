@@ -201,15 +201,15 @@ cpdef detect_objects(unsigned char[:, :] image, unsigned char[::1] cascades,
 
     results = []
     for i in range(n_detections):
-        results.append(
-            PicoDetection(
-                output[4*i],
-                np.array([output[4*i+1], output[4*i+2]]),
-                output[4*i+3],
-                out_orientations[i]
+        if output[4*i+3] > confidence_cutoff:
+            results.append(
+                PicoDetection(
+                    output[4*i+3],
+                    np.array([output[4*i], output[4*i+1]]),
+                    output[4*i+2],
+                    out_orientations[i]
+                )
             )
-        )
-
     return results
 
 cpdef remove_overlap(detections):
@@ -219,7 +219,7 @@ cpdef remove_overlap(detections):
         results_out = []
         check_dict = {}
         for i in range(n_detections):
-            cur = (float(detections[i][0]), float(detections[i][1][0]), float(detections[i][1][1]), float(detections[i][2]))
+            cur = (detections[i][0], detections[i][1][0], detections[i][1][1], detections[i][2])
             check_dict[cur] = detections[i][3]
             arr[4*i] = cur[0]
             arr[4*i + 1] = cur[1]
