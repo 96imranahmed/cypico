@@ -46,15 +46,5 @@ int pico_detect_objects(const unsigned char* image,
        
        n_detections += n_new_detections;
     }
-    // n_detections = cluster_detections(rcsq, n_detections); FIX
-    // Given detections of low confidence, we remove them
-    // for(i = n_detections - 1; i > 0; i--) {
-    //     if (rcsq[4*i + 3] < q_cutoff)
-    //     {
-    //         os[i] = os[n_detections - 1];
-    //         rcsq[i] = rcsq[4*(n_detections -1)];
-    //         n_detections--;
-    //     }
-    // }
     return n_detections;
 }

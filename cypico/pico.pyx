@@ -219,20 +219,21 @@ cpdef remove_overlap(detections):
         results_out = []
         check_dict = {}
         for i in range(n_detections):
-            cur = (detections[i][0], detections[i][1][0], detections[i][1][1], detections[i][2])
+            cur = detections[i]
+            arr[4*i] = cur[1][0]
+            arr[4*i+1] = cur[1][1]
+            arr[4*i+2] = cur[2]
+            arr[4*i+3] = cur[0]
+            cur = tuple(arr[4*i:4*i+4])
             check_dict[cur] = detections[i][3]
-            arr[4*i] = cur[0]
-            arr[4*i + 1] = cur[1]
-            arr[4*i + 2] = cur[2]
-            arr[4*i + 3] = cur[3]
         n_detections = pico_cluster_objects(&arr[0], n_detections)
         for i in range(n_detections):
             cur = tuple(arr[4*i:4*i+4])
             results_out.append(
                 PicoDetection(
-                    arr[4*i],
-                    np.array([arr[4*i+1], arr[4*i+2]]),
                     arr[4*i+3],
+                    np.array([arr[4*i], arr[4*i+1]]),
+                    arr[4*i+2],
                     check_dict[cur]
                 )
             )
