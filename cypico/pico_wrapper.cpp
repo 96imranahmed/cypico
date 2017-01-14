@@ -2,7 +2,7 @@
 
 int pico_cluster_objects(float* rcsq, int n_detections)
 {
-    n_detections = cluster_detections(&rcsq[4*n_detections], n_detections);
+    n_detections = cluster_detections(&rcsq[0], n_detections);
     return n_detections;
 }
 
