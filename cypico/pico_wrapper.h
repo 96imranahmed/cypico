@@ -8,6 +8,10 @@ extern "C" {
     #define MIN(a, b) ((a)<(b)?(a):(b))
 #endif
 
+#ifndef MAX
+    #define MAX(a, b) ((a)>(b)?(a):(b))
+#endif
+
 static const unsigned char CASCADES[] =
 {
     #include "facefinder_new.hex"
