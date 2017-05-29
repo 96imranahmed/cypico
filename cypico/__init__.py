@@ -1,1 +1,1 @@
-from .pico import detect_frontal_faces, detect_objects, remove_overlap
+from .pico import detect, detect_objects, remove_overlap

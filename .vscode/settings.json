@@ -1,0 +1,7 @@
+{
+    "python.linting.pylintEnabled": false,
+    "files.associations": {
+        "*.pyx": "python",
+        "*.hex": "cpp"
+    }
+}

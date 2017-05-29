@@ -39,27 +39,36 @@
 import numpy as np
 cimport numpy as np
 from cython cimport view
-from .pico cimport pico_cluster_objects, pico_detect_objects, CASCADES, CASCADES_SIZE
+from .pico cimport pico_cluster_objects, pico_detect_objects, MODELS_LENS, MDL_ONE, MDL_TWO
 from collections import namedtuple
+from copy import deepcopy
+np.import_array()
 
+### FOR CUSTOM NUMBER OF PRODUCTION CASCADES, SET THE FOLLOWING PARAMS
+# Remember to also change pico_wrapper.h and pico.pxd as appropriate
+NUM_CASCADES = 2
+#Recreate Lengths
+mdl_lens = <long[:NUM_CASCADES]> MODELS_LENS
 
-# Allocate a typed memory view wrapped for the face cascades
-# Required to pass the static Face Cascades memory around in Python
-cdef view.array CASCADES_VIEW = view.array(
-    shape=(CASCADES_SIZE,), itemsize=sizeof(unsigned char), format='B',
+cdef view.array CASCADE_ONE = view.array(
+    shape=(mdl_lens[0],), itemsize=sizeof(unsigned char), format='B',
     mode='c', allocate_buffer=False)
-CASCADES_VIEW.data = <char *> CASCADES
+CASCADE_ONE.data = <char *> MDL_ONE
 
+cdef view.array CASCADE_TWO = view.array(
+    shape=(mdl_lens[1],), itemsize=sizeof(unsigned char), format='B',
+    mode='c', allocate_buffer=False)
+CASCADE_TWO.data = <char *> MDL_TWO
+
+mdl_map = {1: CASCADE_ONE, 2: CASCADE_TWO, 'faces': CASCADE_ONE}
+### ADJUST AS REQUIRED
 
 # Create a namedtuple to store a single detection
 PicoDetection = namedtuple('PicoDetection', ['confidence', 'center', 'diameter', 
                                              'orientation'])
 
 
-cpdef detect_frontal_faces(unsigned char[:, :] image, int max_detections=100,
-                           orientations=0.0, float scale_factor=1.2,
-                           float stride_factor=0.1, float min_size=100,
-                           float confidence_cutoff=3.0):
+cpdef detect(unsigned char[:, :] image, config, cascade_identifier):
     r"""
     Detect faces in the given image. It will detect multiple faces and has
     the ability to detect faces that have been *in-plane* rotated. This implies
@@ -105,7 +114,33 @@ cpdef detect_frontal_faces(unsigned char[:, :] image, int max_detections=100,
         If ``scale_factor`` is less than or equal to 1.0
         If ``stride_factor`` is greater than or equal to 1.0
     """
-    return detect_objects(image, CASCADES_VIEW,
+    max_detections=orientations=scale_factor=stride_factor=min_size=confidence_cutoff=None
+    try:
+        max_detections = config['max_detections']        
+    except KeyError:
+        max_detections = 100
+    try:
+        orientations = config['orientations']        
+    except KeyError:
+        orientations = 0.0
+    try:
+        scale_factor = config['scale']        
+    except KeyError:
+        scale_factor = 1.2
+    try:
+        stride_factor = config['stride']        
+    except KeyError:
+        stride_factor = 0.1
+    try:
+        min_size = config['min_size']        
+    except KeyError:
+        min_size = 100
+    try:
+        confidence_cutoff = config['confidence']        
+    except KeyError:
+        confidence_cutoff = 3.0
+
+    return detect_objects(image, mdl_map[cascade_identifier],
                           max_detections=max_detections,
                           orientations=orientations, scale_factor=scale_factor,
                           stride_factor=stride_factor, min_size=min_size,
@@ -113,9 +148,9 @@ cpdef detect_frontal_faces(unsigned char[:, :] image, int max_detections=100,
 
 
 cpdef detect_objects(unsigned char[:, :] image, unsigned char[::1] cascades,
-                     int max_detections=100, orientations=0.0,
-                     float scale_factor=1.2, float stride_factor=0.1,
-                     float min_size=100, float confidence_cutoff=3.0):
+                     int max_detections, orientations,
+                     float scale_factor, float stride_factor,
+                     float min_size, float confidence_cutoff):
     r"""
     Detect objects in the given image. It will detect multiple objects and has
     the ability to detect objects that have been *in-plane* rotated. This
