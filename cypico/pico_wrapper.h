@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+#include <string>
 
 extern "C" {
     #include "picornt.h"
@@ -13,7 +14,6 @@ extern "C" {
     #define MAX(a, b) ((a)>(b)?(a):(b))
 #endif
 
-
 static const unsigned char MDL_ONE[] =
 {
     #include "cascade.hex"
@@ -25,6 +25,7 @@ static const unsigned char MDL_TWO[] =
 };
 
 static const long MODELS_LENS[] = {(long) (sizeof(MDL_ONE) / sizeof(unsigned char)), (long) (sizeof(MDL_TWO) / sizeof(unsigned char))};
+
 
 
 int pico_cluster_objects(float* rcsq, int n_detections);

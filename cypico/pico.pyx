@@ -42,7 +42,13 @@ from cython cimport view
 from .pico cimport pico_cluster_objects, pico_detect_objects, MODELS_LENS, MDL_ONE, MDL_TWO
 from collections import namedtuple
 from copy import deepcopy
+import re
+import binascii
+import ctypes
 np.import_array()
+
+###TEST CASCADES]
+test_memory = np.ascontiguousarray(np.zeros(1))
 
 ### FOR CUSTOM NUMBER OF PRODUCTION CASCADES, SET THE FOLLOWING PARAMS
 # Remember to also change pico_wrapper.h and pico.pxd as appropriate
@@ -60,13 +66,23 @@ cdef view.array CASCADE_TWO = view.array(
     mode='c', allocate_buffer=False)
 CASCADE_TWO.data = <char *> MDL_TWO
 
-mdl_map = {1: CASCADE_ONE, 2: CASCADE_TWO, 'faces': CASCADE_ONE}
+mdl_map = {1: CASCADE_ONE, 2: CASCADE_TWO, 'faces': CASCADE_ONE} #USED to identifier model
 ### ADJUST AS REQUIRED
 
 # Create a namedtuple to store a single detection
 PicoDetection = namedtuple('PicoDetection', ['confidence', 'center', 'diameter', 
                                              'orientation'])
 
+cpdef load_cascade(abs_path):
+    global test_memory
+    load = None
+    with open(abs_path, 'rb') as f:
+        load = f.read()
+    load = re.sub(r'[^a-zA-Z0-9]','', load)
+    load = load.replace('0x', '')
+    load = binascii.unhexlify(load)
+    test_memory = np.ascontiguousarray(np.array([ord(i) for i in load],  dtype=np.uint8))
+    print('Successfully loaded cascade: ' + abs_path)
 
 cpdef detect(unsigned char[:, :] image, config, cascade_identifier):
     r"""
@@ -114,6 +130,10 @@ cpdef detect(unsigned char[:, :] image, config, cascade_identifier):
         If ``scale_factor`` is less than or equal to 1.0
         If ``stride_factor`` is greater than or equal to 1.0
     """
+    cdef view.array MANUAL
+    cdef np.ndarray[np.uint8_t] load_view
+    if cascade_identifier == 'manual' and len(test_memory) < 2:
+        raise Exception('Error with custom cascade!')
     max_detections=orientations=scale_factor=stride_factor=min_size=confidence_cutoff=None
     try:
         max_detections = config['max_detections']        
@@ -139,12 +159,23 @@ cpdef detect(unsigned char[:, :] image, config, cascade_identifier):
         confidence_cutoff = config['confidence']        
     except KeyError:
         confidence_cutoff = 3.0
-
-    return detect_objects(image, mdl_map[cascade_identifier],
+    if cascade_identifier == 'manual':
+        load_view = test_memory
+        MANUAL = view.array(shape=(len(test_memory),), itemsize=sizeof(unsigned char), format='B', mode='c', allocate_buffer=False)
+        MANUAL.data = <char *> &load_view[0]
+        return detect_objects(image, MANUAL,
                           max_detections=max_detections,
                           orientations=orientations, scale_factor=scale_factor,
                           stride_factor=stride_factor, min_size=min_size,
                           confidence_cutoff=confidence_cutoff)
+    else:
+        return detect_objects(image, mdl_map[cascade_identifier],
+                          max_detections=max_detections,
+                          orientations=orientations, scale_factor=scale_factor,
+                          stride_factor=stride_factor, min_size=min_size,
+                          confidence_cutoff=confidence_cutoff)
+
+
 
 
 cpdef detect_objects(unsigned char[:, :] image, unsigned char[::1] cascades,

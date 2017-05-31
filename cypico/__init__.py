@@ -1,1 +1,1 @@
-from .pico import detect, detect_objects, remove_overlap
+from .pico import load_cascade, detect, detect_objects, remove_overlap
