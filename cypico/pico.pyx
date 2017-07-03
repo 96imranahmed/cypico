@@ -61,12 +61,12 @@ cdef view.array CASCADE_ONE = view.array(
     mode='c', allocate_buffer=False)
 CASCADE_ONE.data = <char *> MDL_ONE
 
-cdef view.array CASCADE_TWO = view.array(
-    shape=(mdl_lens[1],), itemsize=sizeof(unsigned char), format='B',
-    mode='c', allocate_buffer=False)
-CASCADE_TWO.data = <char *> MDL_TWO
+# cdef view.array CASCADE_TWO = view.array(
+#     shape=(mdl_lens[1],), itemsize=sizeof(unsigned char), format='B',
+#     mode='c', allocate_buffer=False)
+# CASCADE_TWO.data = <char *> MDL_TWO //For example
 
-mdl_map = {'bkp': CASCADE_TWO, 'faces': CASCADE_ONE} #USED to indentify which model to pick
+mdl_map = {'faces': CASCADE_ONE} #,'insert_alias':CASCADE_TWO: USED to indentify which model to pick
 ### ADJUST THE ABOVE AS REQUIRED
 
 # Create a namedtuple to store a single detection

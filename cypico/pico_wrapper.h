@@ -16,13 +16,13 @@ extern "C" {
 
 static const unsigned char MDL_ONE[] =
 {
-    #include "cascade.hex"
+    #include "face_original.hex"
 };
 
-static const unsigned char MDL_TWO[] =
-{
-    #include "facefinder_new.hex"
-};
+// static const unsigned char MDL_TWO[] =
+// {
+//     #include "INSERT_NAME_HERE.hex"
+// };
 
 static const long MODELS_LENS[] = {(long) (sizeof(MDL_ONE) / sizeof(unsigned char)), (long) (sizeof(MDL_TWO) / sizeof(unsigned char))};
 
