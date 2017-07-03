@@ -66,8 +66,8 @@ cdef view.array CASCADE_TWO = view.array(
     mode='c', allocate_buffer=False)
 CASCADE_TWO.data = <char *> MDL_TWO
 
-mdl_map = {1: CASCADE_ONE, 2: CASCADE_TWO, 'faces': CASCADE_ONE} #USED to identifier model
-### ADJUST AS REQUIRED
+mdl_map = {'bkp': CASCADE_TWO, 'faces': CASCADE_ONE} #USED to indentify which model to pick
+### ADJUST THE ABOVE AS REQUIRED
 
 # Create a namedtuple to store a single detection
 PicoDetection = namedtuple('PicoDetection', ['confidence', 'center', 'diameter', 
@@ -78,9 +78,16 @@ cpdef load_cascade(abs_path):
     load = None
     with open(abs_path, 'rb') as f:
         load = f.read()
-    load = re.sub(r'[^a-zA-Z0-9]','', load)
-    load = load.replace('0x', '')
-    load = binascii.unhexlify(load)
+    if load.find(', 0x') > 0:
+        print("Loading file using old cypico format")
+        load = re.sub(r'[^a-zA-Z0-9]','', load)
+        load = load.replace('0x', '')
+        load = binascii.unhexlify(load)
+    else:
+        print("Loading file using new pico format")
+        load = binascii.hexlify(load)
+        load = binascii.unhexlify(load) #Fixes errors with file
+    load = load.replace('\n', '')
     test_memory = np.ascontiguousarray(np.array([ord(i) for i in load],  dtype=np.uint8))
     print('Successfully loaded cascade: ' + abs_path)
 
