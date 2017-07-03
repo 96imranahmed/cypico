@@ -24,7 +24,7 @@ static const unsigned char MDL_ONE[] =
 //     #include "INSERT_NAME_HERE.hex"
 // };
 
-static const long MODELS_LENS[] = {(long) (sizeof(MDL_ONE) / sizeof(unsigned char)), (long) (sizeof(MDL_TWO) / sizeof(unsigned char))};
+static const long MODELS_LENS[] = {(long) (sizeof(MDL_ONE) / sizeof(unsigned char))}; //, (long) (sizeof(MDL_TWO) / sizeof(unsigned char))};
 
 
 
