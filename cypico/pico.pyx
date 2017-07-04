@@ -61,6 +61,7 @@ cdef view.array CASCADE_ONE = view.array(
     mode='c', allocate_buffer=False)
 CASCADE_ONE.data = <char *> MDL_ONE
 
+
 # cdef view.array CASCADE_TWO = view.array(
 #     shape=(mdl_lens[1],), itemsize=sizeof(unsigned char), format='B',
 #     mode='c', allocate_buffer=False)
@@ -83,12 +84,11 @@ cpdef load_cascade(abs_path):
         load = re.sub(r'[^a-zA-Z0-9]','', load)
         load = load.replace('0x', '')
         load = binascii.unhexlify(load)
+        test_memory = np.array([ord(i) for i in load],  dtype=np.uint8)
     else:
         print("Loading file using new pico format")
-        load = binascii.hexlify(load)
-        load = binascii.unhexlify(load) #Fixes errors with file
-    load = load.replace('\n', '')
-    test_memory = np.ascontiguousarray(np.array([ord(i) for i in load],  dtype=np.uint8))
+        test_memory = np.fromfile(abs_path, dtype=np.uint8)
+    
     print('Successfully loaded cascade: ' + abs_path)
 
 cpdef detect(unsigned char[:, :] image, config, cascade_identifier):
@@ -167,8 +167,8 @@ cpdef detect(unsigned char[:, :] image, config, cascade_identifier):
     except KeyError:
         confidence_cutoff = 3.0
     if cascade_identifier == 'manual':
-        load_view = test_memory
-        MANUAL = view.array(shape=(len(test_memory),), itemsize=sizeof(unsigned char), format='B', mode='c', allocate_buffer=False)
+        load_view = np.ascontiguousarray(test_memory)
+        MANUAL = view.array(shape=(len(load_view),), itemsize=sizeof(unsigned char), format='B', mode='c', allocate_buffer=False)
         MANUAL.data = <char *> &load_view[0]
         return detect_objects(image, MANUAL,
                           max_detections=max_detections,
