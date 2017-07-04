@@ -25,6 +25,8 @@ Then,
 If using python3, run both commands in python3 to avoid Cython build errors
 
 ### Installing New Models
+Loading cascades into memory at runtime function now  supports loading the models directly from the output models from Cypico! (Woo)!
+
 First use bin2hex (included) to convert model generated from standard pico
 implementation:
 `https://github.com/nenadmarkus/pico - current commit: 45564fc 16 Nov 2016`
